@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BallController : MonoBehaviour {
 	
-	private float speed = 7.0f;
+	private float speed = 6.0f;
 	
 	private Vector2 velocity;
 	
@@ -36,13 +36,14 @@ public class BallController : MonoBehaviour {
 		velocity.y *= -1;
 	}
 	
-	void Reset(PlayerController.Player player) {
-		speed = 7.0f;
+	public void Reset(PlayerController.Player player) {
+		speed = 6.0f;
 		int direction = -1;
 		if(player == PlayerController.Player.Player2) {
 			direction = 1;
 		}
 		
+		transform.position = new Vector3(0,0,0);
 		velocity = new Vector2(speed * direction, Random.Range(2f,speed));
 	}
 }
