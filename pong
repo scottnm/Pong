@@ -1,0 +1,41 @@
+import pygame, sys
+from pygame.locals import *
+
+FPS = 30
+WINDOW_WIDTH = 400
+WINDOW_HEIGHT = 400
+BLACK = (0,0,0)
+WHITE = (255,255,255)
+
+class Ball:
+    def _init_(self):
+        x=200
+        y=200
+
+class Paddle:
+    def _init_(self, x, y):
+        self.x=x
+        self.y=y
+
+def drawBoard(display):
+    display.fill(BLACK)
+    pygame.draw.line(display,WHITE, (200,0), (200,400), 3 )
+    
+
+
+def main():
+    global FPSCLOCK, DISPLAYSURF
+    pygame.init()
+    FPSCLOCK = pygame.time.Clock()
+    DISPLAYSURF = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
+    
+    p1 = Paddle(0,200)
+    p2 = Paddle(200,0)
+    p3 = Paddle(400,200)
+    p4 = Paddle(200,400)
+
+    b1 = Ball()
+
+    drawBoard(DISPLAYSURF)
+    
+
