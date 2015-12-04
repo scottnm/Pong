@@ -5,12 +5,13 @@ WINDOW_WIDTH = 700
 WINDOW_HEIGHT = 700
 PADDLE_WIDTH = 10
 PADDLE_LENGTH = 60
+FONTSIZE = 30
 BLACK = (0,0,0)
 WHITE = (255,255,255)
 
 pygame.init()
 DS = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption("Test")
+pygame.display.set_caption("Pong")
 
 
 
@@ -33,7 +34,7 @@ class Ball():
             self.vx=self.vx-1
             
         self.vx = -self.vx
-        print 'x velocity '+ str(self.vx)
+        #print 'x velocity '+ str(self.vx)
 
     def collideY(self):
         if(self.vy>0):
@@ -42,7 +43,6 @@ class Ball():
             self.vy = self.vy-1
             
         self.vy = -self.vy
-        print 'y velocity '+ str(self.vy)
 
     def checkCollision(self, pLEFT, pRIGHT):
         if(self.y-self.r <= 0 or self.y+self.r >= WINDOW_HEIGHT):
@@ -67,21 +67,36 @@ class Paddle():
     def draw(self, DS):
         pygame.draw.rect(DS, WHITE, pygame.Rect(self.x, self.y, self.WIDTH, self.LENGTH))
 
+class ScoreBoard():
+
+    def __init__(self):
+        self.scoreLeft = 0
+        self.scoreRight = 0
+        self.myFont = pygame.font.SysFont("Verdana", FONTSIZE)
+
+    def update(self, DS):
+        self.scoreLeftIMG = self.myFont.render(str(self.scoreLeft), 0, WHITE)
+        self.scoreRightIMG = self.myFont.render(str(self.scoreRight), 0, WHITE)
+        DS.blit(self.scoreLeftIMG, (WINDOW_WIDTH/4 - FONTSIZE/2, 10))
+        DS.blit(self.scoreRightIMG, (3 * WINDOW_WIDTH/4 - FONTSIZE/2, 10))
+
 def main():
-    b1 = Ball()
-    b2 = Ball()
+    Balls = [Ball(), Ball(), Ball()]
+    
     pLEFT = Paddle(0, 200-PADDLE_LENGTH/2, PADDLE_WIDTH, PADDLE_LENGTH)
     pRIGHT = Paddle(WINDOW_WIDTH-PADDLE_WIDTH, 200-PADDLE_LENGTH/2, PADDLE_WIDTH, PADDLE_LENGTH)
-
+    sb = ScoreBoard()
     
     #Game Loop
     while True:
 
-        if(b1.x>WINDOW_WIDTH or b1.x<0):
-            b1 = Ball()
-
-        if(b2.x>WINDOW_WIDTH or b2.x<0):
-            b2 = Ball()
+        for i in range(0, len(Balls)):
+            if(Balls[i].x>WINDOW_WIDTH):
+                Balls[i] = Ball()
+                sb.scoreLeft+=1
+            elif(Balls[i].x<0):
+                Balls[i] = Ball()
+                sb.scoreRight+=1
         
         for event in pygame.event.get():
             
@@ -118,20 +133,25 @@ def main():
         if(pRIGHT.down and pRIGHT.y+PADDLE_LENGTH < WINDOW_HEIGHT):
             pRIGHT.y=pRIGHT.y+10
         
-
-        b1.checkCollision(pLEFT, pRIGHT)
-        b2.checkCollision(pLEFT, pRIGHT)
-        
-
-        b1.update()
-        b2.update()
+        for b in Balls:
+            b.checkCollision(pLEFT, pRIGHT)
+            b.update()
+            
+ 
         
         pygame.display.update()
+
+        #DrawsBackground
         DS.fill(BLACK)
-    
-        b1.draw(DS)
-        b2.draw(DS)
+        pygame.draw.line(DS, WHITE, (WINDOW_WIDTH/2,0), (WINDOW_WIDTH/2, WINDOW_HEIGHT))
+        sb.update(DS)
         
+        #Draws Paddles
         pLEFT.draw(DS)
         pRIGHT.draw(DS)
+
+        for b in Balls:
+            b.draw(DS)
+
+        
 main()
